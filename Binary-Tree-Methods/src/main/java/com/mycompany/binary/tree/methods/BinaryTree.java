@@ -2,11 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 package com.mycompany.binary.tree.methods;
 
+import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 
 public class BinaryTree<E> {
@@ -187,9 +188,9 @@ hoja tiene cero descendientes */
     public BinaryTree<E> findParentRecursive(BinaryTreeNode<E> bn) {
 
         if (this.getLeft() != null) {
-            if (this.getLeft().root!= bn) {
+            if (this.getLeft().root != bn) {
                 this.getLeft().findParentRecursive(bn);
-            }else{
+            } else {
                 System.out.println(this);
                 System.out.println(bn);
                 return this;
@@ -199,7 +200,7 @@ hoja tiene cero descendientes */
 
             if (this.getRight().root != bn) {
                 this.getRight().findParentRecursive(bn);
-            }else{
+            } else {
                 System.out.println(this);
                 System.out.println(bn);
                 return this;
@@ -210,33 +211,56 @@ hoja tiene cero descendientes */
 
 //  3  Implemente el método countLevels que calcule el número de niveles de árbol. Considere
 //que un árbol vacío tiene 0 niveles, mientras que un árbol hoja tiene 1 solo nivel.
-    public int countLevelsIterative() {
+   public int countLevelsIterative(){
         if(this.isEmpty()){
             return 0;
         }
-        return 0;
-    }
-
-    public int countLevelsRecursive() {
-        if(this.isEmpty()){
-            return 0;
-        }
-        
         if(this.isLeaf()){
             return 1;
         }
-        int contador1=0;
-        int contador2=0;
-        if(this.getLeft()!=null){
-            contador1+=this.getLeft().countLevelsRecursive();
-            
-        }
-        if(this.getRight()!=null){
-            contador2+=this.getRight().countLevelsRecursive();
-            
-        }
-        return Math.max(contador1, contador2);
         
+        
+        //MasterPiece by J
+        
+        Queue<BinaryTree<E>> q = new ArrayDeque<>();
+        q.offer(this);
+        int nivel = 0;
+        while(!q.isEmpty()){
+            int cantElements = q.size();
+            for(int i = 0;i<cantElements;i++){
+                BinaryTree<E> t = q.poll();
+                if(t.getLeft() != null){
+                    q.offer(t.getLeft());
+                }
+                if(t.getRight() != null){
+                    q.offer(t.getRight());
+                }
+            }
+            nivel++;
+        }
+        return nivel;
+   }
+
+    public int countLevelsRecursive() {
+        if (this.isEmpty()) {
+            return 0;
+        }
+
+        if (this.isLeaf()) {
+            return 1;
+        }
+        int contador1 = 0;
+        int contador2 = 0;
+        if (this.getLeft() != null) {
+            contador1 += this.getLeft().countLevelsRecursive();
+
+        }
+        if (this.getRight() != null) {
+            contador2 += this.getRight().countLevelsRecursive();
+
+        }
+        return Math.max(contador1, contador2)+1;
+
     }
 
 //   4   Se dice que un árbol binario es zurdo si el árbol: 1) está vacío, 2) es una hoja, o 3) si sus hijos
@@ -246,17 +270,128 @@ hoja tiene cero descendientes */
 
     }
 
-    public void isLeftyRecursive() {
-
+    public boolean isLeftyRecursive() {
+        if(this.isEmpty()){
+            return true;
+        }if(this.isLeaf()){
+            return true;
+        }
+        
+        int izq=0;
+        int derecha= 0;
+        
+        if(this.getLeft()!=null){
+            this.isLeftyRecursive();
+            izq++;
+        }if(this.getRight()!=null){
+            this.isLeftyRecursive();
+            derecha++;
+        }
+        
+        if(izq>derecha){
+            return true;
+        }
+        
+        return false;
+        
     }
 
 //    5 Implemente el método isIdentical que, dado un segundo árbol binario, retorne true o
 //false indicando si dicho árbol es igual al que invoca el método.
+    
+    
 //  6  Encontrar el valor más grande de cada nivel del árbol. El método largestValueOfEachLevel
 //debe imprimir el mayor valor presente en cada nivel de un árbol binario cuyos nodos
 //contienen números enteros. Ejemplos:
+    
+public void largestValueOfEachLevelIterative(){
+    if(this.isEmpty()){
+        return;
+    }
+    
+    Queue<BinaryTree<E>> q=new ArrayDeque<>();
+    
+    q.offer(this);
+    while(!q.isEmpty()){
+        int valorMax=0;
+        int tamaño= q.size();
+        for(int i=0;i<tamaño;i++){
+            BinaryTree<E> at= q.poll();
+            Integer contenido= (Integer) at.getRoot();
+            if(contenido>valorMax){
+                valorMax=contenido;
+        }
+            if(at.getLeft()!=null){
+                q.offer(at.getLeft());
+            }if(at.getRight()!=null){
+                q.offer(at.getRight());
+            }
+        }
+       System.out.println(valorMax);
+    }
+}
+    
+public void largestValueOfEachLevelRecursive(){
+    
+    
+    
+    
+}
+    
+    
 //  7  El método countNodesWithOnlyChild debe retornar el número de nodos de un árbol que
 //tienen un solo hijo. Ejemplo:
+    public int countNodesWithOnlyChildRercursive() {
+        int contador = 0;
+
+        if (this.isLeaf()) {
+            return contador;
+        }
+
+        if (this.getLeft() != null && this.getRight() == null) {
+            contador++;
+        }
+
+        if (this.getRight() != null && this.getLeft() == null) {
+            contador++;
+        }
+
+        if (this.getLeft() != null) {
+            contador += this.getLeft().countNodesWithOnlyChildRercursive();
+        }
+        if (this.getRight() != null) {
+            contador += this.getRight().countNodesWithOnlyChildRercursive();
+        }
+
+        return contador;
+
+    }
+
+    public int countNodesWithOnlyChildIterative() {
+        Stack<BinaryTree<E>> s = new Stack<>();
+        
+        s.push(this);
+        int contador=0;
+        
+        while(!s.isEmpty()){
+            BinaryTree<E> arbolTemporal=s.pop();
+            if(arbolTemporal.getRight()!=null && arbolTemporal.getLeft()==null){
+                contador++;
+            }
+            if(arbolTemporal.getLeft()!=null && arbolTemporal.getRight()==null){
+                contador++;
+            }
+            if(arbolTemporal.getLeft()!=null){
+                s.push(arbolTemporal.getLeft());
+            }if(arbolTemporal.getRight()!=null){
+                s.push(arbolTemporal.getRight());
+            }
+            
+        }
+        
+        return contador;
+    }
+
 //  8  //El método isHeightBalanced debe retornar si un árbol binario está balanceado en altura o
 // no. Un árbol vacío está siempre balanceado en altura. Un árbol binario no vacío está
 //balanceado si y solo si:
