@@ -5,6 +5,7 @@
 package com.mycompany.binary.tree.methods;
 
 import java.util.ArrayDeque;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -211,35 +212,32 @@ hoja tiene cero descendientes */
 
 //  3  Implemente el método countLevels que calcule el número de niveles de árbol. Considere
 //que un árbol vacío tiene 0 niveles, mientras que un árbol hoja tiene 1 solo nivel.
-   public int countLevelsIterative(){
-        if(this.isEmpty()){
+    public int countLevelsIterative() {
+        if (this.isEmpty()) {
             return 0;
         }
-        if(this.isLeaf()){
+        if (this.isLeaf()) {
             return 1;
         }
-        
-        
         //MasterPiece by J
-        
         Queue<BinaryTree<E>> q = new ArrayDeque<>();
         q.offer(this);
         int nivel = 0;
-        while(!q.isEmpty()){
+        while (!q.isEmpty()) {
             int cantElements = q.size();
-            for(int i = 0;i<cantElements;i++){
+            for (int i = 0; i < cantElements; i++) {
                 BinaryTree<E> t = q.poll();
-                if(t.getLeft() != null){
+                if (t.getLeft() != null) {
                     q.offer(t.getLeft());
                 }
-                if(t.getRight() != null){
+                if (t.getRight() != null) {
                     q.offer(t.getRight());
                 }
             }
             nivel++;
         }
         return nivel;
-   }
+    }
 
     public int countLevelsRecursive() {
         if (this.isEmpty()) {
@@ -259,7 +257,7 @@ hoja tiene cero descendientes */
             contador2 += this.getRight().countLevelsRecursive();
 
         }
-        return Math.max(contador1, contador2)+1;
+        return Math.max(contador1, contador2) + 1;
 
     }
 
@@ -271,74 +269,118 @@ hoja tiene cero descendientes */
     }
 
     public boolean isLeftyRecursive() {
-        if(this.isEmpty()){
-            return true;
-        }if(this.isLeaf()){
+        if (this.isEmpty()) {
             return true;
         }
-        
-        int izq=0;
-        int derecha= 0;
-        
-        if(this.getLeft()!=null){
+        if (this.isLeaf()) {
+            return true;
+        }
+
+        int izq = 0;
+        int derecha = 0;
+
+        if (this.getLeft() != null) {
             this.isLeftyRecursive();
             izq++;
-        }if(this.getRight()!=null){
+        }
+        if (this.getRight() != null) {
             this.isLeftyRecursive();
             derecha++;
         }
-        
-        if(izq>derecha){
+
+        if (izq > derecha) {
             return true;
         }
-        
+
         return false;
-        
+
     }
 
 //    5 Implemente el método isIdentical que, dado un segundo árbol binario, retorne true o
 //false indicando si dicho árbol es igual al que invoca el método.
-    
-    
+    public boolean isIdenticalIterative(BinaryTree<E> aComparar, Comparator<E> cmp) {
+        Stack<BinaryTree<E>> s1 = new Stack<>();
+        Stack<BinaryTree<E>> s2 = new Stack<>();
+
+        //Hago un PreOrder y voy comparando que onda;
+        s1.push(this);
+        s2.push(aComparar);
+        while (!s1.isEmpty() && !s2.isEmpty()) {
+            BinaryTree<E> a1 = s1.pop();
+            BinaryTree<E> a2 = s2.pop();
+
+            if (cmp.compare(a1.getRoot(), a2.getRoot()) == 0) {
+                if (a1.getLeft() != null && a2.getLeft() != null) {
+                    s1.push(a1.getLeft());
+                    s2.push(a2.getLeft());
+                }
+                if (a1.getRight() != null && a2.getRight() != null) {
+                    s1.push(a1.getRight());
+                    s2.push(a2.getRight());
+                }
+            } else {
+                return false;
+            }
+
+        }
+        return true;
+    }
+
+    public boolean isIdenticalRecursive(BinaryTree<E> aComparar, Comparator<E> cmp) {
+        
+         boolean bool= false;
+        
+        if(cmp.compare(this.getRoot(),aComparar.getRoot())==0){
+           bool = true;
+        }
+        
+        
+        if(this.getLeft()!= null && aComparar.getLeft()!=null){
+            bool=bool && this.getLeft().isIdenticalRecursive(aComparar.getLeft(), cmp);
+        }
+         if(this.getRight()!= null && aComparar.getRight()!=null){
+            bool=bool && this.getRight().isIdenticalRecursive(aComparar.getRight(), cmp);
+        }
+         
+         return bool;
+        
+    }
+
 //  6  Encontrar el valor más grande de cada nivel del árbol. El método largestValueOfEachLevel
 //debe imprimir el mayor valor presente en cada nivel de un árbol binario cuyos nodos
 //contienen números enteros. Ejemplos:
-    
-public void largestValueOfEachLevelIterative(){
-    if(this.isEmpty()){
-        return;
-    }
-    
-    Queue<BinaryTree<E>> q=new ArrayDeque<>();
-    
-    q.offer(this);
-    while(!q.isEmpty()){
-        int valorMax=0;
-        int tamaño= q.size();
-        for(int i=0;i<tamaño;i++){
-            BinaryTree<E> at= q.poll();
-            Integer contenido= (Integer) at.getRoot();
-            if(contenido>valorMax){
-                valorMax=contenido;
+    public void largestValueOfEachLevelIterative() {
+        if (this.isEmpty()) {
+            return;
         }
-            if(at.getLeft()!=null){
-                q.offer(at.getLeft());
-            }if(at.getRight()!=null){
-                q.offer(at.getRight());
+
+        Queue<BinaryTree<E>> q = new ArrayDeque<>();
+
+        q.offer(this);
+        while (!q.isEmpty()) {
+            int valorMax = 0;
+            int tamaño = q.size();
+            for (int i = 0; i < tamaño; i++) {
+                BinaryTree<E> at = q.poll();
+                Integer contenido = (Integer) at.getRoot();
+                if (contenido > valorMax) {
+                    valorMax = contenido;
+                }
+                if (at.getLeft() != null) {
+                    q.offer(at.getLeft());
+                }
+                if (at.getRight() != null) {
+                    q.offer(at.getRight());
+                }
             }
+            System.out.println(valorMax);
         }
-       System.out.println(valorMax);
     }
-}
-    
-public void largestValueOfEachLevelRecursive(){
-    
-    
-    
-    
-}
-    
-    
+
+    public void largestValueOfEachLevelRecursive() {
+
+    }
+
 //  7  El método countNodesWithOnlyChild debe retornar el número de nodos de un árbol que
 //tienen un solo hijo. Ejemplo:
     public int countNodesWithOnlyChildRercursive() {
@@ -369,26 +411,27 @@ public void largestValueOfEachLevelRecursive(){
 
     public int countNodesWithOnlyChildIterative() {
         Stack<BinaryTree<E>> s = new Stack<>();
-        
+
         s.push(this);
-        int contador=0;
-        
-        while(!s.isEmpty()){
-            BinaryTree<E> arbolTemporal=s.pop();
-            if(arbolTemporal.getRight()!=null && arbolTemporal.getLeft()==null){
+        int contador = 0;
+
+        while (!s.isEmpty()) {
+            BinaryTree<E> arbolTemporal = s.pop();
+            if (arbolTemporal.getRight() != null && arbolTemporal.getLeft() == null) {
                 contador++;
             }
-            if(arbolTemporal.getLeft()!=null && arbolTemporal.getRight()==null){
+            if (arbolTemporal.getLeft() != null && arbolTemporal.getRight() == null) {
                 contador++;
             }
-            if(arbolTemporal.getLeft()!=null){
+            if (arbolTemporal.getLeft() != null) {
                 s.push(arbolTemporal.getLeft());
-            }if(arbolTemporal.getRight()!=null){
+            }
+            if (arbolTemporal.getRight() != null) {
                 s.push(arbolTemporal.getRight());
             }
-            
+
         }
-        
+
         return contador;
     }
 

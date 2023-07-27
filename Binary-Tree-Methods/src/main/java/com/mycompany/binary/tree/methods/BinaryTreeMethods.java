@@ -3,6 +3,8 @@
  */
 package com.mycompany.binary.tree.methods;
 
+import java.util.Comparator;
+
 /**
  *
  * @author Administrador
@@ -19,6 +21,24 @@ public class BinaryTreeMethods {
         tree.getRight().setLeft(new BinaryTree(5));
         tree.getRight().setRight(new BinaryTree(6));
         tree.getRight().getRight().setRight(new BinaryTree(7));
+        
+        BinaryTree<Integer> treeIdentical = new BinaryTree(0);
+        treeIdentical.setLeft(new BinaryTree(1));
+        treeIdentical.setRight(new BinaryTree(2));
+        treeIdentical.getLeft().setLeft(new BinaryTree(3));
+        BinaryTree<Integer> btIdentical = new BinaryTree(4);
+        treeIdentical.getLeft().setRight(btIdentical);
+        treeIdentical.getRight().setLeft(new BinaryTree(5));
+        treeIdentical.getRight().setRight(new BinaryTree(6));
+        treeIdentical.getRight().getRight().setRight(new BinaryTree(7));
+        
+        Comparator<Integer> cmp = new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1.compareTo(o2);
+            }
+        };
+
 
         System.out.println("Probando el primer método countDescendants: ");
         System.out.println("Iterativo: ");
@@ -47,9 +67,9 @@ public class BinaryTreeMethods {
 
         System.out.println("Probando el quinto método isIdentical: ");
         System.out.println("Iterativo: ");
-        // System.out.println(tree.countLevelsIterative());
+         System.out.println(tree.isIdenticalIterative(treeIdentical,cmp));
         System.out.println("Recursivo: ");
-        // System.out.println(tree.countLevelsRecursive());
+        System.out.println(tree.isIdenticalRecursive(treeIdentical, cmp));
 
         System.out.println("Probando el sexto método largestValueOfEachLevel: ");
         System.out.println("Iterativo: ");
